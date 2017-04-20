@@ -19,5 +19,21 @@ studentiFile: studentiFile.o
 studentiFile.o: studentiFile.c
 	gcc $(CFLAGS) studentiFile.c
 
+all:signals
+
+signals: signals.o
+	gcc -o signals signals.o
+
+signals.o: signals.c
+	gcc $(CFLAGS) signals.c
+
+all:pipe
+
+pipe: pipe.o
+	gcc -o pipe pipe.o
+
+pipe.o: pipe.c
+	gcc $(CFLAGS) pipe.c
+
 clean:
 	rm -f *.o test
