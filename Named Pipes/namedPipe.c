@@ -16,8 +16,10 @@ int main()
     char * myfifo = "myfifo";
     char line[MAX_BUF];
     
+    unlink(myfifo);
     /* create the FIFO named pipe */
     if (mkfifo(myfifo, PERM) == -1) {
+        printf("error");
         exit(1);
     }
     
