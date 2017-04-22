@@ -1,29 +1,61 @@
 #include <stdio.h>
 #include <sys/shm.h>
 #include <sys/stat.h>
+#include <sys/sem.h>
+#include <sys/ipc.h>
+
+#define MAXSIZE 27
+
+void P(int semid, int index) {
+    int ret;
+    struct sembuf op;
+    
+    op.sem_num = index;
+    op.sem_op = -1;
+    op.sem_flg = SEM_UNDO;
+    
+    if ((ret = semop(semid, &op, 1)) == -1) {
+        printf("Error");
+    }
+}
+
+void V(int semid, int index) {
+    int ret;
+    struct sembuf op;
+    
+    op.sem_num = index;
+    op.sem_op = 1;
+    op.sem_flg = SEM_UNDO;
+    
+    if ((ret = semop(semid, &op, 1)) == -1) {
+        printf("Error");
+    }
+}
 
 int main ()
 {
-    key_t shm_key = 6166529;
-    const int shm_size = 1024;
+    int shmid;
+    key_t key;
+    char *shm, *s;
     
-    int shm_id;
-    char* shmaddr, *ptr;
-    int *p;
+    key = 5678;
     
-    /* Allocate a shared memory segment. */
-    shm_id = shmget (shm_key, shm_size, IPC_CREAT | S_IRUSR | S_IWUSR);
+    if ((shmid = shmget(key, MAXSIZE, 0666)) < 0) {
+        return 0;
+    }
     
-    /* Attach the shared memory segment. */
-    shmaddr = (char*) shmat (shm_id, 0, 0);
+    if ((shm = shmat(shmid, NULL, 0)) == (char *) -1) {
+        return 0;
+    }
     
-    printf ("Data %s\n", shmaddr);
+    //Now read what the server put in the memory.
+    for (s = shm; *s != '\0'; s++) {
+        printf("%c",*s);
+        //putchar(*s);
+    }
+    putchar('\n');
+
+    *shm = '*';
     
-    /* Start to read data. */
-    p = (int *)shmaddr;
-    //printf("Print %d",p)
-    
-    /* Detach the shared memory segment. */
-    shmdt (shmaddr);
     return 0;
 }

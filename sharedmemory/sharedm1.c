@@ -2,37 +2,67 @@
 #include <string.h>
 #include <sys/shm.h>
 #include <sys/stat.h>
+#include <sys/sem.h>
+#include <sys/ipc.h>
 
 #define MAX_BUF 1024
 #define PERM 0666
 #define SHMKEY 9993332
 
+#define MAXSIZE 27
+
+void P(int semid, int index) {
+    int ret;
+    struct sembuf op;
+    
+    op.sem_num = index;
+    op.sem_op = -1;
+    op.sem_flg = SEM_UNDO;
+    
+    if ((ret = semop(semid, &op, 1)) == -1) {
+        printf("Error");
+    }
+}
+
+void V(int semid, int index) {
+    int ret;
+    struct sembuf op;
+    
+    op.sem_num = index;
+    op.sem_op = 1;
+    op.sem_flg = SEM_UNDO;
+    
+    if ((ret = semop(semid, &op, 1)) == -1) {
+        printf("Error");
+    }
+}
+
 int main()
 {
-    key_t shm_key = 6166529;
-    const int shm_size = 1024;
+    char c;
+    int shmid;
+    key_t key;
+    char *shm, *s;
     
-    int shm_id;
-    char* shmaddr, *ptr;
+    key = 5678;
     
-    printf ("writer started.\n");
+    if ((shmid = shmget(key, MAXSIZE, IPC_CREAT | PERM)) < 0) {
+        return 0;
+    }
     
-    /* Allocate a shared memory segment. */
-    shm_id = shmget (shm_key, shm_size, IPC_CREAT);
+    if ((shm = shmat(shmid, NULL, 0)) == (char *) -1) {
+        return 0;
+    }
     
-    /* Attach the shared memory segment. */
-    shmaddr = (char*) shmat (shm_id, 0, 0);
+    s = shm;
     
-    printf ("shared memory attached at address %p\n", shmaddr);
+    for (c = 'a'; c <= 'z'; c++) {
+        *s++ = c;
+    }
     
-    /* Start to write data. */
-    shmaddr = "test";
-    
-    printf("%s\n",shmaddr);
-    /* Detach the shared memory segment. */
-    shmdt (shmaddr);
-    /* Deallocate the shared memory segment.*/
-    shmctl (shm_id, IPC_RMID, 0);
+    while (*shm != '*') {
+        sleep(1);
+    }
     
     return 0;
 }
