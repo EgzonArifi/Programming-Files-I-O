@@ -15,10 +15,10 @@ If you are running in Linux
 sudo apt-get install gcc
 ```
 
-###Usage
+### Usage
 
-./myStudentsFile nameOfFile -add [Emri Mbiemri Piket Nota] -l
+./myStudentsFile nameOfFile -add [Name Surname Points Age] -l
 
 ## Authors
 
-* **Egzon Arifi** - *University Of Pristina*
+* **Egzon Arifi**
