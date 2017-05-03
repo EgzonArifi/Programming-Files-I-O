@@ -42,8 +42,8 @@ int main(int argc, char *argv[])
         /* send a value to parent */
         int data [5] = {6,7,8,9,10};
         if(  write(fd[P2_WRITE], &data, sizeof(int)*5) == -1) {
-            perror("Child: Failed to send value to parent ");
-            exit(EXIT_FAILURE);
+            printf("Child: Failed to send value to parent ");
+            exit(0);
         }
         /* now wait for a response */
         int buf [5] = {};
@@ -52,8 +52,8 @@ int main(int argc, char *argv[])
             printf("\nElements recieved from child is %d\n ",buf[i]);
         }
         if (len < 0) {
-            perror("Child: failed to read value from pipe");
-            exit(EXIT_FAILURE);
+            printf("Child: failed to read value from pipe");
+            exit(0);
         }
         else if (len == 0) {
             /* not an error, but certainly unexpected */
