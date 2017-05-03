@@ -74,13 +74,13 @@ int main(int argc, char *argv[])
     }
     else
     {
-        // Parent. close unneeded descriptors
+        /* Parent. close unneeded descriptors */
         close(fd[P2_READ]);
         close(fd[P2_WRITE]);
-        // used for output
+        /* used for output */
         int childPid = pid;
         pid = getpid();
-        // send a value to the child
+        /* send a value to the child */
         printf("Parent with pid %d: Sending to child\n", pid);
         int data [5] = {1,2,3,4,5};
         sleep(2);
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
             exit(EXIT_FAILURE);
         }
         sleep(2);
-        // now wait for a response
+        /* now wait for a response */
         int buf [5] = {};
         len = read(fd[P1_READ], &buf, sizeof(int)*5);
         for (int i = 0; i < 5; i++){
@@ -104,14 +104,14 @@ int main(int argc, char *argv[])
         }
         else if (len == 0)
         {
-            // not an error, but certainly unexpected
+            /* not an error, but certainly unexpected */
             fprintf(stderr, "Parent(%d): Read EOF from pipe", pid);
         }
-        // close down remaining descriptors
+        /* close down remaining descriptors */
         close(fd[P1_READ]);
         close(fd[P1_WRITE]);
         printf("Parent exiting\n");
-        // kill child process
+        /* kill child process */
         exit(0);
     }
     return EXIT_SUCCESS;
