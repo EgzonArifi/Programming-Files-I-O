@@ -40,17 +40,17 @@ int main(int argc, char *argv[])
         // Parent. close unneeded descriptors
         close(fd[P1_READ]);
         close(fd[P1_WRITE]);
-        // used for output
+        /* used for output */
         pid = getpid();
         printf("Child with pid %d: Sending to parent\n", pid);
-        // send a value to parent
+        /* send a value to parent */
         int data [5] = {6,7,8,9,10};
         if(  write(fd[P2_WRITE], &data, sizeof(int)*5) == -1)
         {
             perror("Child: Failed to send value to parent ");
             exit(EXIT_FAILURE);
         }
-        // now wait for a response
+        /* now wait for a response */
         int buf [5] = {};
         len = read(fd[P2_READ], &buf, sizeof(int)*5);
         for (int i = 0; i < 5; i++){
@@ -63,10 +63,10 @@ int main(int argc, char *argv[])
         }
         else if (len == 0)
         {
-            // not an error, but certainly unexpected
+            /* not an error, but certainly unexpected */
             fprintf(stderr, "Child(%d): Read EOF from pipe", pid);
         }
-        // close down remaining descriptors
+        /* close down remaining descriptors */
         close(fd[P2_READ]);
         close(fd[P2_WRITE]);
         
