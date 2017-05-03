@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
         sleep(2);
         if(  write(fd[P1_WRITE], &data, sizeof(int)*5) == -1) {
             perror("Parent: Failed to send value to child ");
-            exit(EXIT_FAILURE);
+            exit(0);
         }
         sleep(2);
         /* now wait for a response */
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
         kill(childPid, SIGKILL);
         if (len < 0) {
             perror("Parent: failed to read value from pipe");
-            exit(EXIT_FAILURE);
+            exit(0);
         }
         else if (len == 0) {
             /* not an error, but certainly unexpected */
