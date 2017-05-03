@@ -1,66 +1,118 @@
-/*
- This program will enable two way communication between
- parent and child process
- */
-#define _POSIX_SOURCE
-#include <sys/types.h>
-#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <signal.h>
-#include <sys/wait.h>
 
-/* Helper method to write characters in the pipe */
-void writeToPipe (int file) {
-    int data[5] = {6,7,8,9,10};
-    int i;
-    for (i = 0; i < 5; i++) {
-        write(file, &data[i], sizeof(int));
-        printf("\nElement %d writen from child is %d\n",i,data[i]);
-    }
-    write(file, &data, sizeof(int));
-    close(file);
-}
-/* Helper method to read characters from the pipe */
-void readFromPipe (int file) {
-    int c;
-    int buffer [5] = {};
-    int i;
-    for (i = 0; i < 5; i++) {
-        read(file, &buffer[i], sizeof(int));
-        printf("\nElement %d received from parent is %d\n",i,buffer[i]);
-    }
-    close(file);
-}
+/*  Parent: reads from P1_READ, writes on P1_WRITE */
+/*  Child:  reads from P2_READ, writes on P2_WRITE */
+#define P1_READ     0
+#define P2_WRITE    1
+#define P2_READ     2
+#define P1_WRITE    3
 
-int main(int argc, char * argv[]) {
+#define NUM_PIPES   2
+
+int main(int argc, char *argv[])
+{
+    int fd[2*NUM_PIPES];
+    int len, i;
     pid_t pid;
-    int myPipe[2];
-    
-    /* Create the pipe */
-    if (pipe(myPipe)) {
-        fprintf(stderr, "Pipe failed\n");
-        return 0;
+    /* create all the descriptor pairs we need */
+    for (i=0; i<NUM_PIPES; ++i)
+    {
+        if (pipe(fd+(i*2)) < 0)
+        {
+            printf("Failed to allocate pipes");
+            exit(EXIT_FAILURE);
+        }
     }
-    
-    /* Create the cild process */
-    pid = fork();
-    if (pid == (pid_t) 0) {
-        /* Here is child process */
-        close(myPipe[0]);
-        writeToPipe(myPipe[1]);
-        return 0;
-    } else if (pid < (pid_t) 0) {
-        /* The fork failed */
-        fprintf(stderr, "Fork failed\n");
-        return 0;
-    } else {
-        /* Parent process */
-        close(myPipe[1]);
-        readFromPipe(myPipe[0]);
-        wait(NULL);
-        return 0;
+    /* fork() returns 0 for child process, child-pid for parent process. */
+    if ((pid = fork()) < 0)
+    {
+        perror("Failed to fork process");
+        return EXIT_FAILURE;
     }
-    
-    return 0;
+    /* if the pid is zero, this is the child process */
+    if (pid == 0)
+    {
+        // Child. Start by closing descriptors we
+        //  don't need in this process
+        // Parent. close unneeded descriptors
+        close(fd[P1_READ]);
+        close(fd[P1_WRITE]);
+        // used for output
+        pid = getpid();
+        printf("Child with pid %d: Sending to parent\n", pid);
+        // send a value to parent
+        int data [5] = {6,7,8,9,10};
+        if(  write(fd[P2_WRITE], &data, sizeof(int)*5) == -1)
+        {
+            perror("Child: Failed to send value to parent ");
+            exit(EXIT_FAILURE);
+        }
+        // now wait for a response
+        int buf [5] = {};
+        len = read(fd[P2_READ], &buf, sizeof(int)*5);
+        for (int i = 0; i < 5; i++){
+            printf("\nElements recieved from child is %d\n ",buf[i]);
+        }
+        if (len < 0)
+        {
+            perror("Child: failed to read value from pipe");
+            exit(EXIT_FAILURE);
+        }
+        else if (len == 0)
+        {
+            // not an error, but certainly unexpected
+            fprintf(stderr, "Child(%d): Read EOF from pipe", pid);
+        }
+        // close down remaining descriptors
+        close(fd[P2_READ]);
+        close(fd[P2_WRITE]);
+        
+        return EXIT_SUCCESS;
+    }
+    else
+    {
+        // Parent. close unneeded descriptors
+        close(fd[P2_READ]);
+        close(fd[P2_WRITE]);
+        // used for output
+        int childPid = pid;
+        pid = getpid();
+        // send a value to the child
+        printf("Parent with pid %d: Sending to child\n", pid);
+        int data [5] = {1,2,3,4,5};
+        sleep(2);
+        if(  write(fd[P1_WRITE], &data, sizeof(int)*5) == -1)
+        {
+            perror("Parent: Failed to send value to child ");
+            exit(EXIT_FAILURE);
+        }
+        sleep(2);
+        // now wait for a response
+        int buf [5] = {};
+        len = read(fd[P1_READ], &buf, sizeof(int)*5);
+        for (int i = 0; i < 5; i++){
+            printf("\nElements recieved from parent is %d\n ",buf[i]);
+        }
+        kill(childPid, SIGKILL);
+        if (len < 0)
+        {
+            perror("Parent: failed to read value from pipe");
+            exit(EXIT_FAILURE);
+        }
+        else if (len == 0)
+        {
+            // not an error, but certainly unexpected
+            fprintf(stderr, "Parent(%d): Read EOF from pipe", pid);
+        }
+        // close down remaining descriptors
+        close(fd[P1_READ]);
+        close(fd[P1_WRITE]);
+        printf("Parent exiting\n");
+        // kill child process
+        exit(0);
+    }
+    return EXIT_SUCCESS;
 }
