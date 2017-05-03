@@ -21,17 +21,17 @@ int main(int argc, char *argv[])
     for (i=0; i<NUM_PIPES; ++i) {
         if (pipe(fd+(i*2)) < 0) {
             printf("Failed to allocate pipes");
-            exit(EXIT_FAILURE);
+            exit(0);
         }
     }
     /* fork() returns 0 for child process, child-pid for parent process. */
     if ((pid = fork()) < 0) {
-        perror("Failed to fork process");
-        return EXIT_FAILURE;
+        printf("Failed to fork process");
+        exit(0);
     }
     /* if the pid is zero, this is the child process */
     if (pid == 0) {
-        // Child. Start by closing descriptors we
+        // Child. Start by closing descriptors wl
         //  don't need in this process
         // Parent. close unneeded descriptors
         close(fd[P1_READ]);
