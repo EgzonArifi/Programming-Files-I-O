@@ -31,9 +31,9 @@ int main(int argc, char *argv[])
     }
     /* if the pid is zero, this is the child process */
     if (pid == 0) {
-        // Child. Start by closing descriptors wl
-        //  don't need in this process
-        // Parent. close unneeded descriptors
+        /* Child: start by closing descriptors wl
+         don't need in this process
+         Parent. close unneeded descriptors */
         close(fd[P1_READ]);
         close(fd[P1_WRITE]);
         /* used for output */
