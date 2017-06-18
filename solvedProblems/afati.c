@@ -77,7 +77,7 @@ void usage(){
 
 int main(int argc, char * argv[]) {
 
-    /*//Detyra 1.1
+    //Detyra 1.1
     int muaji, viti;
     printf("Jepni muajin dhe vitin: ");
     scanf(" %i %i", &muaji, &viti);
@@ -96,10 +96,10 @@ int main(int argc, char * argv[]) {
     struct TAutomobili pAuto;
     pAuto = initializeAutomobilet1(&auto2);
     printf("\npAuto :%s \n",pAuto.tipi);
-    printf("\npAuto Data auto1: %d %d  \n", pAuto.dataProdhimit->muaji, pAuto.dataProdhimit->viti);*/
+    printf("\npAuto Data auto1: %d %d  \n", pAuto.dataProdhimit->muaji, pAuto.dataProdhimit->viti);
 
     //Detyra 2
-    if(argc<3){
+    if(argc<3) {
         usage();
     }
     
@@ -112,11 +112,11 @@ int main(int argc, char * argv[]) {
         switch(option)
         {
             case 'c':
-                if(flagc){
+                if(flagc) {
                     usage();
                 } else {
                     shkalla=optarg[0]-'0';
-                    if( (shkalla>5||shkalla<1) || (strlen(optarg) > 1)){
+                    if((shkalla>5||shkalla<1) || (strlen(optarg) > 1)) {
                         usage();
                     }
                     flagc++;
@@ -124,11 +124,9 @@ int main(int argc, char * argv[]) {
                 }
                 break;
             case 'n':
-                if (flagn)
-                {
+                if (flagn) {
                     usage();
-                }
-                else{
+                } else {
                     printf("%s\n",argv[optind]);
                     komprimo=0;
                     flagc++;
@@ -140,8 +138,7 @@ int main(int argc, char * argv[]) {
         }
     }
     
-    
-    if(!((argc-(optind-1))>2&&(argc-(optind-1))<1026)){
+    if(!((argc-(optind-1))>2 && (argc-(optind-1))<1026)) {
         usage();
     }
     return 0;
