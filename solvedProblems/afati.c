@@ -80,7 +80,7 @@ int main(int argc, char * argv[]) {
     //Detyra 1.1
     int muaji, viti;
     printf("Jepni muajin dhe vitin: ");
-    scanf(" %i %i", &muaji, &viti);
+    scanf("%i %i", &muaji, &viti);
     printf("\nis valid %d\n",isValid(muaji,viti));
     
     //Detyra 1.2b
