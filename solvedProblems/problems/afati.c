@@ -60,6 +60,14 @@ int main(int argc, char * argv[]) {
     printf("a jane te plotepjestueshem?: %d\n", isDivisorByReference(dR, nR, &fR));
     printf("Faktori i pjestueshmerise: %d\n", fR);
     
+    //Detyra 1.3c
+    struct Animals animal1, animal2;
+    
+    initAnimal("110kembeshi", 110, 3, 2008, &animal1);
+    printf("Animal1 : Name:%s, Legs: %d, Weight: %d, Discovered: %d\n",animal1.Name, animal1.Legs, animal1.Weight, animal1.Discovered);
+    
+    initAnimal("OktupusGjigant", 7, 10000, -3000, &animal2);
+    printf("Animal2 : Name:%s, Legs: %d, Weight: %d, Discovered: %d\n",animal2.Name, animal2.Legs, animal2.Weight, animal2.Discovered);
     
     return 0;
 }
