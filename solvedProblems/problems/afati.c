@@ -23,9 +23,27 @@ int isDivisorByReference(int d, int n, int *fR) {
     }
     return 0;
 }
-//Detyra 1.2b
+//Detyra 1.3a
+const int MAXNAME = 80;
 
-//Detyra 2
+struct Animals
+{
+    char Name[MAXNAME];
+    unsigned short Legs;
+    unsigned int Weight;
+    int Discovered;
+};
+//Detyra 1.3b
+void initAnimal(char Name[MAXNAME], unsigned short Legs, unsigned int Weight, int Discovered,struct Animals *animalRef) {
+    struct Animals animal;
+    
+    strcpy(animal.Name, Name);
+    animal.Legs = Legs;
+    animal.Weight = Weight;
+    animal.Discovered = Discovered;
+    
+    *animalRef = animal;
+}
 
 int main(int argc, char * argv[]) {
 
@@ -41,7 +59,7 @@ int main(int argc, char * argv[]) {
     scanf("%i %i", &dR, &nR);
     printf("a jane te plotepjestueshem?: %d\n", isDivisorByReference(dR, nR, &fR));
     printf("Faktori i pjestueshmerise: %d\n", fR);
-    //Detyra 2
+    
     
     return 0;
 }
