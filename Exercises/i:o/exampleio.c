@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #define kFileName "file_to_write"
+
 int main(int argc, char * argv[]) {
     FILE *dataFile;
     char ch;
@@ -20,7 +21,7 @@ int main(int argc, char * argv[]) {
     
     printf("Success\n");
     
-    /* Readinf from the file */
+    /* Reading from the file */
     if ((dataFile = fopen(kFileName,"r")) == NULL) {
         printf("Error while reading from file\n");
         exit(0);
