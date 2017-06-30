@@ -1,3 +1,9 @@
+/*
+ Ky program krijon nje proces femije, dhe me pastaj realizohet dergimi i disa te dhenave.
+ Ketu procesi prind i dergon te dhenat 1,2,3,4,5 te procesi prind dhe procesi femije do te dergoj te dhenat 6,7,8,9,10 te prindi
+ Paraqitja behet ne stdout
+ Pas pranimit te shenimeve procesi prind e terminon procesin femije dhe perfundon programi
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
