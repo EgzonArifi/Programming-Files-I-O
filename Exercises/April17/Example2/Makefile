@@ -3,13 +3,22 @@
 CFLAGS = -c -ansi -g
 
 
-all:detyre2
+all:rrjeta
 
-detyre2: detyre2.o
-	gcc -o detyre2 detyre2.o
+rrjeta: rrjeta.o
+	gcc -o rrjeta rrjeta.o
 
-detyre2.o: detyre2.c
-	gcc $(CFLAGS) detyre2.c
+rrjeta.o: rrjeta.c
+	gcc $(CFLAGS) rrjeta.c
 
 clean:
-	rm -f *.o detyre2
+	rm -f *.o rrjeta
+	rm -f *.o nyja
+
+all:nyja
+
+nyja: nyja.o
+	gcc -o nyja nyja.o
+
+nyja.o: nyja.c
+	gcc $(CFLAGS) nyja.c
