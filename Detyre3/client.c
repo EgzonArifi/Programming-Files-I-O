@@ -12,6 +12,7 @@
 #include <ctype.h>
 #include <fcntl.h>
 
+/* Definimi i struktures dhe variablave per program */
 typedef struct messagebuffer  {
     long msg_to;
     int count;
@@ -24,10 +25,12 @@ struct msqid_ds buf;
 MESSAGE msg;
 
 int main(int argc, char** argv) {
-    if( argc == 2 ) {
+    /* Kontrollimi i argumenteve */
+    if(argc == 2) {
         clientId = atoi(argv[1]);
-        key = 12347;
+        key = 12344;
         
+        /* Krijimi i msg queue */
         if ((mid = msgget(key, 0666)) < 0) {
             perror("msgget");
             exit(1);
@@ -35,8 +38,9 @@ int main(int argc, char** argv) {
         printf("Message Queue ID: %d\n", mid);
         printf("Client ID: %ld\n", (long)getpid());
         
+        /* Unaze e pafundme qe lexon te dhenat e strukturuara nga msg queue */
         while(1) {
-            if(msgrcv(mid, &msg, sizeof(struct messagebuffer ), clientId, 0)<0) {
+            if(msgrcv(mid, &msg, sizeof(struct messagebuffer), clientId, 0) <0) {
                 perror("msgrcv");
                 exit(-1);
             }

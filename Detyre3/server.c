@@ -12,7 +12,7 @@
 #include <ctype.h>
 #include <fcntl.h>
 
-/* Deefinimi i struktures dhe variablave per program */
+/* Definimi i struktures dhe variablave per program */
 typedef struct messagebuffer  {
     long msg_to;
     int count;
@@ -28,7 +28,7 @@ MESSAGE msg;
 int read_data();
 
 int main(int argc, char** argv) {
-    key = 12347;
+    key = 12344;
     /* Krijimi i message queue dhe trajtimi i problemeve */
     if((mid = msgget(key, IPC_CREAT | 0666)) < 0){
         perror("msgget");
@@ -52,6 +52,7 @@ int main(int argc, char** argv) {
             printf("Message send to client with ID to %ld\n",msg.msg_to );
         }
     }
+
     msgctl(mid, IPC_RMID, (struct msqid_ds *) 0);
     return (EXIT_SUCCESS);
 }
