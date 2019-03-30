@@ -12,10 +12,12 @@ void usage() {
     printf("cancelredeye [-o] [-s sensivity] pic\n");
     exit(1);
 }
+
 void done() {
     printf("Success\n");
     exit(1);
 }
+
 int main(int argc, char * argv[]) {
     
     int option;
@@ -39,7 +41,7 @@ int main(int argc, char * argv[]) {
                 }
                 int intensity =  atoi(optarg); //https://stackoverflow.com/a/16573360/4729736
                 if (intensity < 0 || intensity > 999 || !intensity) { //ose strlen(optarg) > 3 check me kon 0>intensity>999
-                    usage();
+                    printf("Sensivity interval must be between 0 and 999\n");
                 }
                 break;
             default:
